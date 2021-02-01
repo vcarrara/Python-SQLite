@@ -11,38 +11,38 @@ def companies():
 
 
 @app.route('/countPosts')
-def countPosts():
-    companyId = request.args.get('companyId')
+def count_posts():
+    company_id = request.args.get('companyId')
     source = request.args.get('source')
-    if (companyId is None):
+    if (company_id is None):
         abort(400)
-    return jsonify(count_posts(companyId, source))
+    return jsonify(count_posts(company_id, source))
 
 
 @app.route('/posts')
 def posts():
-    companyId = request.args.get('companyId')
+    company_id = request.args.get('companyId')
     source = request.args.get('source')
-    if companyId is None or source is None:
+    if company_id is None or source is None:
         abort(400)
-    return jsonify(retrieve_posts(companyId, source))
+    return jsonify(retrieve_posts(company_id, source))
 
 
 @app.route('/interactions')
 def interactions():
-    companyId = request.args.get('companyId')
-    minDate = request.args.get('minDate')
-    maxDate = request.args.get('maxDate')
+    company_id = request.args.get('companyId')
+    min_date = request.args.get('minDate')
+    max_date = request.args.get('maxDate')
     preg = '^\\d{4}-\\d{2}-\\d{2}$'
-    if companyId is None:
+    if company_id is None:
         abort(400)
-    if minDate is not None:
-        if re.search(preg, minDate) is None:
+    if min_date is not None:
+        if re.search(preg, min_date) is None:
             abort(400)
-    if maxDate is not None:
-        if re.search(preg, maxDate) is None:
+    if max_date is not None:
+        if re.search(preg, max_date) is None:
             abort(400)
-    return jsonify(retrieve_interactions(companyId, minDate, maxDate))
+    return jsonify(retrieve_interactions(company_id, min_date, max_date))
 
 
 if __name__ == "__main__":
