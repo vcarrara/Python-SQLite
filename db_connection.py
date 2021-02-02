@@ -35,3 +35,22 @@ def retrieve_interactions(company_id, min_date, max_date):
     elif min_date and max_date:
         c.execute("SELECT Source, SUM(Likes), SUM(Comments), Sum(Shares) FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id WHERE Posts.companyId = ? AND strftime('%s', Interactions.Date) BETWEEN strftime('%s', ?) AND strftime('%s', ?) GROUP BY Source", (company_id, min_date, max_date))
     return c.fetchall()
+
+
+def retrieve_evolution(company_id):
+    c = conn.cursor()
+    c.execute("""
+        SELECT
+        strftime('%W', Posts.Date) Interval,
+        SUM(Likes),
+        Source,
+        Posts.id as IdPost
+        FROM Interactions
+        JOIN Posts ON Interactions.PostId = Posts.Id
+        WHERE Posts.companyId = ? AND Interactions.Date IN (
+            SELECT MAX(Interactions.Date) FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id WHERE Posts.Id = IdPost
+        )
+        GROUP BY Interval, Source
+        ORDER BY Posts.Id, Interactions.Date;
+    """, company_id)
+    return c.fetchall()
