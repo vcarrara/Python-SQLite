@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  python:
+    # Définition du nom du container
+    container_name: python-sqlite
+    # Lecture du Dockerfile dans le même répertoire pour le build
+    build: .
+    # Binding port 80 machine sur port 80 container
+    ports:
+      - "80:80"
+    # Définition des variables d'environnement
+    environment:
+      PORT: 80

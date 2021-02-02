@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, abort
 from db_connection import retrieve_companies, retrieve_count_posts, retrieve_posts, retrieve_interactions, retrieve_evolution
+import os
 import re
 
 app = Flask(__name__)
@@ -54,4 +55,4 @@ def evolution():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8080, host="0.0.0.0")
+    app.run(debug=True, port=os.getenv('PORT'), host="0.0.0.0")
