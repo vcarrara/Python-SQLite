@@ -1,25 +1,25 @@
 from flask import Flask, jsonify, request, abort
-from db_connection import retrieve_companies, count_posts, retrieve_posts, retrieve_interactions
+from db_connection import retrieve_companies, retrieve_count_posts, retrieve_posts, retrieve_interactions
 import re
 
 app = Flask(__name__)
 
 
-@app.route('/companies')
+@app.route('/companies', methods=['GET'])
 def companies():
     return jsonify(retrieve_companies())
 
 
-@app.route('/countPosts')
+@app.route('/countPosts', methods=['GET'])
 def count_posts():
     company_id = request.args.get('companyId')
     source = request.args.get('source')
     if (company_id is None):
         abort(400)
-    return jsonify(count_posts(company_id, source))
+    return jsonify(retrieve_count_posts(company_id, source))
 
 
-@app.route('/posts')
+@app.route('/posts', methods=['GET'])
 def posts():
     company_id = request.args.get('companyId')
     source = request.args.get('source')
@@ -28,7 +28,7 @@ def posts():
     return jsonify(retrieve_posts(company_id, source))
 
 
-@app.route('/interactions')
+@app.route('/interactions', methods=['GET'])
 def interactions():
     company_id = request.args.get('companyId')
     min_date = request.args.get('minDate')
@@ -46,4 +46,4 @@ def interactions():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=80)

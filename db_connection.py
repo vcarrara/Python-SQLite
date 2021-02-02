@@ -9,7 +9,7 @@ def retrieve_companies():
     return c.fetchall()
 
 
-def count_posts(company_id, source):
+def retrieve_count_posts(company_id, source):
     c = conn.cursor()
     if source is None:
         c.execute("SELECT COUNT(*) FROM Posts JOIN Companies ON Posts.companyId = Companies.id WHERE Companies.id = ?", company_id)
@@ -26,12 +26,12 @@ def retrieve_posts(company_id, source):
 
 def retrieve_interactions(company_id, min_date, max_date):
     c = conn.cursor()
-    if min_date is None and max_date is None:
-        c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id JOIN Companies ON Posts.CompanyId = Companies.Id WHERE companyId = ? GROUP BY Source", company_id)
-    elif min_date is not None and max_date is None:
+    if not min_date and not max_date:
+        c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id WHERE Posts.companyId = ? GROUP BY Source", company_id)
+    elif min_date and not max_date:
         c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id JOIN Companies ON Posts.CompanyId = Companies.Id WHERE companyId = ? AND strftime('%s', Interactions.Date) >= strftime('%s', ?) GROUP BY Source", (company_id, min_date))
-    elif min_date is None and max_date is not None:
+    elif not min_date and max_date:
         c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id JOIN Companies ON Posts.CompanyId = Companies.Id WHERE companyId = ? AND strftime('%s', Interactions.Date) <= strftime('%s', ?) GROUP BY Source", (company_id, max_date))
-    elif min_date is not None and max_date is not None:
+    elif min_date and max_date:
         c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id JOIN Companies ON Posts.CompanyId = Companies.Id WHERE companyId = ? AND strftime('%s', Interactions.Date) BETWEEN strftime('%s', ?) AND strftime('%s', ?) GROUP BY Source", (company_id, min_date, max_date))
     return c.fetchall()
