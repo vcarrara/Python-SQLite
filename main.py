@@ -14,7 +14,7 @@ def companies():
 def count_posts():
     company_id = request.args.get('companyId')
     source = request.args.get('source')
-    if (company_id is None):
+    if (not company_id):
         abort(400)
     return jsonify(retrieve_count_posts(company_id, source))
 
@@ -23,7 +23,7 @@ def count_posts():
 def posts():
     company_id = request.args.get('companyId')
     source = request.args.get('source')
-    if company_id is None or source is None:
+    if not company_id or not source:
         abort(400)
     return jsonify(retrieve_posts(company_id, source))
 
@@ -34,13 +34,13 @@ def interactions():
     min_date = request.args.get('minDate')
     max_date = request.args.get('maxDate')
     preg = '^\\d{4}-\\d{2}-\\d{2}$'
-    if company_id is None:
+    if not company_id:
         abort(400)
-    if min_date is not None:
-        if re.search(preg, min_date) is None:
+    if min_date:
+        if not re.search(preg, min_date):
             abort(400)
-    if max_date is not None:
-        if re.search(preg, max_date) is None:
+    if max_date:
+        if not re.search(preg, max_date):
             abort(400)
     return jsonify(retrieve_interactions(company_id, min_date, max_date))
 
@@ -48,7 +48,7 @@ def interactions():
 @app.route('/evolution', methods=['GET'])
 def evolution():
     company_id = request.args.get('companyId')
-    if (company_id is None):
+    if not company_id:
         abort(400)
     return jsonify(retrieve_evolution(company_id))
 
