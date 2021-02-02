@@ -27,11 +27,11 @@ def retrieve_posts(company_id, source):
 def retrieve_interactions(company_id, min_date, max_date):
     c = conn.cursor()
     if not min_date and not max_date:
-        c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id WHERE Posts.companyId = ? GROUP BY Source", company_id)
+        c.execute("SELECT Source, SUM(Likes), SUM(Comments), Sum(Shares) FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id WHERE Posts.companyId = ? GROUP BY Source", company_id)
     elif min_date and not max_date:
-        c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id JOIN Companies ON Posts.CompanyId = Companies.Id WHERE companyId = ? AND strftime('%s', Interactions.Date) >= strftime('%s', ?) GROUP BY Source", (company_id, min_date))
+        c.execute("SELECT Source, SUM(Likes), SUM(Comments), Sum(Shares) FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id WHERE Posts.companyId = ? AND strftime('%s', Interactions.Date) >= strftime('%s', ?) GROUP BY Source", (company_id, min_date))
     elif not min_date and max_date:
-        c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id JOIN Companies ON Posts.CompanyId = Companies.Id WHERE companyId = ? AND strftime('%s', Interactions.Date) <= strftime('%s', ?) GROUP BY Source", (company_id, max_date))
+        c.execute("SELECT Source, SUM(Likes), SUM(Comments), Sum(Shares) FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id WHERE Posts.companyId = ? AND strftime('%s', Interactions.Date) <= strftime('%s', ?) GROUP BY Source", (company_id, max_date))
     elif min_date and max_date:
-        c.execute("SELECT Count(*), Source FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id JOIN Companies ON Posts.CompanyId = Companies.Id WHERE companyId = ? AND strftime('%s', Interactions.Date) BETWEEN strftime('%s', ?) AND strftime('%s', ?) GROUP BY Source", (company_id, min_date, max_date))
+        c.execute("SELECT Source, SUM(Likes), SUM(Comments), Sum(Shares) FROM Interactions JOIN Posts ON Interactions.PostId = Posts.Id WHERE Posts.companyId = ? AND strftime('%s', Interactions.Date) BETWEEN strftime('%s', ?) AND strftime('%s', ?) GROUP BY Source", (company_id, min_date, max_date))
     return c.fetchall()
