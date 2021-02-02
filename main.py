@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, abort
-from db_connection import retrieve_companies, retrieve_count_posts, retrieve_posts, retrieve_interactions
+from db_connection import retrieve_companies, retrieve_count_posts, retrieve_posts, retrieve_interactions, retrieve_evolution
 import re
 
 app = Flask(__name__)
@@ -43,6 +43,14 @@ def interactions():
         if re.search(preg, max_date) is None:
             abort(400)
     return jsonify(retrieve_interactions(company_id, min_date, max_date))
+
+
+@app.route('/evolution', methods=['GET'])
+def evolution():
+    company_id = request.args.get('companyId')
+    if company_id is None:
+        abort(400)
+    return jsonify(retrieve_evolution(company_id))
 
 
 if __name__ == "__main__":
